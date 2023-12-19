@@ -40,21 +40,15 @@ func GenerateKeys(bits int) (*big.Int, *big.Int, *big.Int) {
 
 	// generate publicKey
 	publicKey := big.NewInt(2)
-	for {
-		// if gcd(publicKey, phi) == 1
-		if new(big.Int).GCD(nil, nil, publicKey, phi).Cmp(big.NewInt(1)) == 0 {
-			break
-		}
+	// for gcd(publicKey, phi) != 1
+	for new(big.Int).GCD(nil, nil, publicKey, phi).Cmp(big.NewInt(1)) != 0 {
 		publicKey.Add(publicKey, big.NewInt(1))
 	}
 
 	// generate privateKey
+	// for (privateKey * publicKey) % phi != 1
 	privateKey := big.NewInt(2)
-	for {
-		// if (privateKey * publicKey) % phi == 1
-		if new(big.Int).Mod(new(big.Int).Mul(privateKey, publicKey), phi).Cmp(big.NewInt(1)) == 0 {
-			break
-		}
+	for new(big.Int).Mod(new(big.Int).Mul(privateKey, publicKey), phi).Cmp(big.NewInt(1)) != 0 {
 		privateKey.Add(privateKey, big.NewInt(1))
 	}
 
